@@ -13,7 +13,7 @@ public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String message;
 
@@ -21,5 +21,8 @@ public class Feedback {
 
     @ManyToOne
     private User createdBy;
+
+    @ManyToOne
+    private Product product;
 
 }

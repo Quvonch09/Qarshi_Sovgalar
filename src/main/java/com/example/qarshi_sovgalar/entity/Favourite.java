@@ -15,13 +15,13 @@ public class Favourite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     private User createdBy;
 
     @ManyToOne
-    private Product productId;
+    private Product product;
 
     private LocalDateTime createdAt;
 }

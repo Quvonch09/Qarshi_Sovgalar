@@ -1,8 +1,10 @@
 package com.example.qarshi_sovgalar.service;
 
+import com.example.qarshi_sovgalar.entity.Feedback;
 import com.example.qarshi_sovgalar.entity.File;
 import com.example.qarshi_sovgalar.entity.Product;
 import com.example.qarshi_sovgalar.payload.ApiResponse;
+import com.example.qarshi_sovgalar.payload.FeedbackDTO;
 import com.example.qarshi_sovgalar.payload.ProductDTO;
 import com.example.qarshi_sovgalar.payload.ResponseError;
 import com.example.qarshi_sovgalar.payload.res.ResPageable;
@@ -27,6 +29,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final FileRepository fileRepository;
     private final FeedbackRepository feedbackRepository;
+    private final FeedbackService feedbackService;
 
     public ApiResponse saveProduct(ProductDTO productDTO){
 
@@ -79,6 +82,9 @@ public class ProductService {
         List<Long> fileIds = product.getFiles().stream()
                 .map(File::getId).toList();
 
+        List<FeedbackDTO> feedbackDTOS = feedbackRepository.findAllByProduct(productId).stream()
+                .map(feedbackService::getFeedbackDTO).toList();
+
         ResProductDTO resProductDTO = ResProductDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -87,7 +93,7 @@ public class ProductService {
                 .count(product.getCount())
                 .images(fileIds)
                 .rating(productRepository.rating(product.getId()))
-                .feedbacks(feedbackRepository.findAllByProduct(productId))
+                .feedbacks(feedbackDTOS)
                 .build();
 
         return new ApiResponse(resProductDTO);

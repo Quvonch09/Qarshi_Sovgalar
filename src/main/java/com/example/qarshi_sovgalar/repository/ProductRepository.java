@@ -20,9 +20,8 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
         
                     (
                         SELECT AVG(f.ball)
-                        FROM product_feedbacks pf
-                        LEFT JOIN feedback f ON pf.feedbacks_id = f.id
-                        WHERE pf.product_id = p.id
+                        FROM feedback f
+                        WHERE f.product_id = p.id
                     ) AS rating,
         
                     (
@@ -49,8 +48,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
 
     @Query(value = """
-        SELECT AVG(f.ball) from product p join public.product_feedbacks pf on p.id = pf.product_id
-        join feedback f on pf.feedbacks_id = f.id where p.id = ?1;
+        SELECT AVG(f.ball) from feedback f where f.product_id = ?1
 """, nativeQuery=true)
     Double rating(Long productId);
 }
