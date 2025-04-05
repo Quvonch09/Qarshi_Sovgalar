@@ -19,6 +19,8 @@ public class FeedbackDTO {
 
     private int ball;
 
+    private Long productId;
+
     @Schema(hidden = true)
     private String ownerName;
 }

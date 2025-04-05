@@ -27,6 +27,4 @@ public class Product extends AbsEntity {
     @OneToMany(fetch = FetchType.EAGER)
     private List<File> files;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Feedback> feedbacks;
 }
