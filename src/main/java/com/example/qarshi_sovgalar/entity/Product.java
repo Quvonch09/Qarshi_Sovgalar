@@ -2,6 +2,7 @@ package com.example.qarshi_sovgalar.entity;
 
 import com.example.qarshi_sovgalar.entity.template.AbsEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.*;
 
@@ -23,9 +24,9 @@ public class Product extends AbsEntity {
 
     private int count;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<File> files;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Feedback> feedbacks;
 }

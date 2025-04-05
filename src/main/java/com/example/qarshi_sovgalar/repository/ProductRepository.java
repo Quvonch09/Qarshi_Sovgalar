@@ -44,8 +44,8 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
                 ORDER BY rating DESC;
 """, nativeQuery=true)
     Page<ResProducts> searchProducts(@Param("keyword") String keyword,
-                                     @Param("startPrice") double startPrice,
-                                     @Param("endPrice") double endPrice, Pageable pageable);
+                                     @Param("startPrice") Double startPrice,
+                                     @Param("endPrice") Double endPrice, Pageable pageable);
 
 
     @Query(value = """
