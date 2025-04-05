@@ -52,7 +52,7 @@ public class ProductService {
 
 
 
-    public ApiResponse getAllProducts(String keyword, double startPrice, double endPrice, int page, int size){
+    public ApiResponse getAllProducts(String keyword, Double startPrice, Double endPrice, int page, int size){
         Page<ResProducts> products = productRepository.searchProducts(keyword, startPrice, endPrice, PageRequest.of(page, size));
         if (products.getTotalElements() == 0){
             return new ApiResponse(ResponseError.NOTFOUND("Productlar"));
@@ -91,5 +91,36 @@ public class ProductService {
                 .build();
 
         return new ApiResponse(resProductDTO);
+    }
+
+
+    public ApiResponse updateProduct(Long productId, ProductDTO productDTO){
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product == null){
+            return new ApiResponse(ResponseError.NOTFOUND("Product"));
+        }
+
+        List<File> files = productDTO.getFileIds().stream()
+                .map(fileId -> fileRepository.findById(fileId).orElse(null)).toList();
+
+        product.setName(productDTO.getName());
+        product.setPrice(productDTO.getPrice());
+        product.setDescription(productDTO.getDescription());
+        product.setCount(productDTO.getCount());
+        product.setFiles(files);
+        productRepository.save(product);
+        return new ApiResponse("Successfully updated product");
+    }
+
+
+    public ApiResponse deleteProduct(Long productId){
+
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product == null){
+            return new ApiResponse(ResponseError.NOTFOUND("Product"));
+        }
+
+        productRepository.delete(product);
+        return new ApiResponse("Successfully deleted product");
     }
 }
