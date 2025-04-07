@@ -12,6 +12,7 @@ import java.util.List;
 public class ProductDTO {
     private String name;
     private String description;
+    private List<String> tags;
     private double price;
     private int count;
     private List<Long> fileIds;

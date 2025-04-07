@@ -31,10 +31,8 @@ public class ProductController {
             description = "startPrice va endPrice uzum marketdagi taglarday ishlaydi")
     public ResponseEntity<ApiResponse> searchProduct(@RequestParam(required = false) String keyword,
                                                      @RequestParam(required = false) Double startPrice,
-                                                     @RequestParam(required = false) Double endPrice,
-                                                     @RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(productService.getAllProducts(keyword, startPrice, endPrice, page, size));
+                                                     @RequestParam(required = false) Double endPrice) {
+        return ResponseEntity.ok(productService.getAllProducts(keyword, startPrice, endPrice));
     }
 
 

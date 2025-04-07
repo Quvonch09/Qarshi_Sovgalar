@@ -8,43 +8,51 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
     @Query(value = """
-        SELECT
-                    p.id,
-                    p.name,
-                    p.description,
-                    p.price,
-                    p.count,
+        SELECT distinct
+            p.id,
+            p.name,
+            p.description,
+            (
+                select string_agg(pt2.tags, ', ')
+                from product_tags pt2
+                where pt2.product_id = p.id
+            ) as tags,
+            p.price,
+            p.count,
         
-                    (
-                        SELECT AVG(f.ball)
-                        FROM feedback f
-                        WHERE f.product_id = p.id
-                    ) AS rating,
+            (
+                SELECT AVG(f.ball)
+                FROM feedback f
+                WHERE f.product_id = p.id
+            ) AS rating,
         
-                    (
-                        SELECT ARRAY_AGG(pf2.files_id)
-                        FROM product_files pf2
-                        WHERE pf2.product_id = p.id
-                    ) AS images
+            (
+                SELECT ARRAY_AGG(pf2.files_id)
+                FROM product_files pf2
+                WHERE pf2.product_id = p.id
+            ) AS images
         
-                FROM product p
+        FROM product p join product_tags pt on p.id = pt.product_id
         
-                WHERE
-                    (:keyword IS NULL OR
-                     LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-                     LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')))
+        WHERE
+            (:keyword IS NULL OR
+             LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+             LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+             LOWER(tags) LIKE LOWER(CONCAT('%', :keyword, '%')))
         
-                    AND (:startPrice IS NULL OR p.price >= :startPrice)
-                    AND (:endPrice IS NULL OR p.price <= :endPrice)
+          AND (:startPrice IS NULL OR p.price >= :startPrice)
+          AND (:endPrice IS NULL OR p.price <= :endPrice)
         
-                ORDER BY rating DESC;
+        ORDER BY rating DESC;
 """, nativeQuery=true)
-    Page<ResProducts> searchProducts(@Param("keyword") String keyword,
+    List<ResProducts> searchProducts(@Param("keyword") String keyword,
                                      @Param("startPrice") Double startPrice,
-                                     @Param("endPrice") Double endPrice, Pageable pageable);
+                                     @Param("endPrice") Double endPrice);
 
 
     @Query(value = """
