@@ -10,6 +10,7 @@ public interface ResProducts {
     Long getId();
     String getName();
     String getDescription();
+    String getTags();
     Double getPrice();
     Integer getCount();
     Double getRating();
